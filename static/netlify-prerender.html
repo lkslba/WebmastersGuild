@@ -1,0 +1,30 @@
+<!-- Netlify form prerendering for better form handling -->
+<!-- This is required for Netlify to properly handle the forms when JavaScript is not available -->
+
+<form name="guild-join" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <input type="url" name="website-url" />
+  <textarea name="website-description"></textarea>
+  <input type="text" name="website-tags" />
+  <input type="password" name="password" />
+  <input type="checkbox" name="agreement" />
+</form>
+
+<form name="member-profile" netlify netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="user-id" />
+  <input type="text" name="display-name" />
+  <input type="url" name="website-url" />
+  <textarea name="website-description"></textarea>
+  <input type="text" name="website-tags" />
+  <textarea name="bio"></textarea>
+  <textarea name="social-links"></textarea>
+  <input type="checkbox" name="list-directory" />
+</form>
+
+<form name="webring-join" netlify netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="user-id" />
+  <input type="url" name="website-url" />
+  <select name="preferred-location"></select>
+  <input type="checkbox" name="webring-agreement" />
+</form>

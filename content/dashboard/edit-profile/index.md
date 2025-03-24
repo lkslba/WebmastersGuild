@@ -57,11 +57,113 @@ draft: false
 </form>
 
 <script>
-// This function will be replaced with real authentication
+// Check for authentication and load member data
 document.addEventListener('DOMContentLoaded', function() {
-    if (!document.querySelector('.netlify-identity-user')) {
+    // Check if user is authenticated with Netlify Identity
+    if (!window.netlifyIdentity || !window.netlifyIdentity.currentUser()) {
         window.location.href = '/';
         alert('Please log in to access your profile');
+        return;
     }
+    
+    // Get current user and token
+    const currentUser = window.netlifyIdentity.currentUser();
+    const authToken = currentUser.token.access_token;
+    
+    // Show loading state
+    document.getElementById('display-name').value = 'Loading...';
+    document.getElementById('website-url').value = 'Loading...';
+    
+    // Fetch member data from API
+    fetch('/.netlify/functions/get-member', {
+        headers: {
+            'Authorization': `Bearer ${authToken}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load member data');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success && data.member) {
+            const member = data.member;
+            
+            // Set form fields
+            document.getElementById('display-name').value = member.name || '';
+            document.getElementById('website-url').value = member.website || '';
+            document.getElementById('website-description').value = member.description || '';
+            document.getElementById('website-tags').value = Array.isArray(member.tags) ? member.tags.join(', ') : '';
+            document.getElementById('bio').value = member.bio || '';
+            document.getElementById('social-links').value = member.socialLinks || '';
+            
+            if (member.listInDirectory !== undefined) {
+                document.getElementById('list-directory').checked = member.listInDirectory;
+            }
+            
+            // Handle form submission
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show loading state
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalButtonText = submitButton.textContent;
+                    submitButton.textContent = 'Updating...';
+                    submitButton.disabled = true;
+                    
+                    // Prepare update data
+                    const updateData = {
+                        name: document.getElementById('display-name').value,
+                        website: document.getElementById('website-url').value,
+                        description: document.getElementById('website-description').value,
+                        tags: document.getElementById('website-tags').value,
+                        bio: document.getElementById('bio').value,
+                        socialLinks: document.getElementById('social-links').value,
+                        listInDirectory: document.getElementById('list-directory').checked
+                    };
+                    
+                    // Call update API
+                    fetch('/.netlify/functions/update-member', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify(updateData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to update profile');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            alert('Profile updated successfully!');
+                            window.location.href = '/dashboard/';
+                        } else {
+                            throw new Error(data.error || 'Failed to update profile');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating profile:', error);
+                        alert('Error updating profile: ' + error.message);
+                        submitButton.textContent = originalButtonText;
+                        submitButton.disabled = false;
+                    });
+                });
+            }
+        } else {
+            console.error('Invalid member data returned from API');
+            alert('Failed to load your profile data');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching member data:', error);
+        alert('Failed to load your profile data. Please try again later.');
+    });
 });
 </script>

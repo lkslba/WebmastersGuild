@@ -84,7 +84,7 @@
                 </li>
                 
                 <li class="nav-item">
-                    <a href="#" class="nav-link login-button" data-netlify-identity-button>Login</a>
+                    <a href="#" class="nav-link login-button" id="auth-button">Login</a>
                 </li>
             </ul>
         </nav>
@@ -100,6 +100,39 @@ document.addEventListener('DOMContentLoaded', function() {
         menuToggle.addEventListener('click', function() {
             navList.classList.toggle('hidden');
         });
+    }
+    
+    
+    const authButton = document.getElementById('auth-button');
+    if (authButton) {
+        
+        const userData = localStorage.getItem('webmastersGuildUser');
+        
+        if (userData) {
+            
+            authButton.textContent = 'Logout';
+            authButton.setAttribute('href', '/dashboard/');
+            
+            
+            authButton.addEventListener('click', function(e) {
+                if (e.target.textContent === 'Logout') {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to log out?')) {
+                        localStorage.removeItem('webmastersGuildUser');
+                        window.location.href = '/';
+                    }
+                }
+            });
+        } else {
+            
+            authButton.textContent = 'Login';
+            
+            
+            authButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/join/';
+            });
+        }
     }
 });
 </script><main class="main-content">

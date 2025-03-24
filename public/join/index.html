@@ -81,7 +81,7 @@
                 </li>
                 
                 <li class="nav-item">
-                    <a href="#" class="nav-link login-button" data-netlify-identity-button>Login</a>
+                    <a href="#" class="nav-link login-button" id="auth-button">Login</a>
                 </li>
             </ul>
         </nav>
@@ -98,6 +98,39 @@ document.addEventListener('DOMContentLoaded', function() {
             navList.classList.toggle('hidden');
         });
     }
+    
+    
+    const authButton = document.getElementById('auth-button');
+    if (authButton) {
+        
+        const userData = localStorage.getItem('webmastersGuildUser');
+        
+        if (userData) {
+            
+            authButton.textContent = 'Logout';
+            authButton.setAttribute('href', '/dashboard/');
+            
+            
+            authButton.addEventListener('click', function(e) {
+                if (e.target.textContent === 'Logout') {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to log out?')) {
+                        localStorage.removeItem('webmastersGuildUser');
+                        window.location.href = '/';
+                    }
+                }
+            });
+        } else {
+            
+            authButton.textContent = 'Login';
+            
+            
+            authButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/join/';
+            });
+        }
+    }
 });
 </script><main class="main-content">
             <div class="container">
@@ -108,7 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
 |                                 |
 +---------------------------------+</pre>
     
-    <h1 id="join-the-webmastersguild">Join the WebmastersGuild</h1>
+    <div class="join-page-content">
+        <h1 id="join-the-webmastersguild">Join the WebmastersGuild</h1>
 <pre tabindex="0"><code>&gt; Welcome, aspiring guild member!
 &gt; We&#39;re excited that you&#39;re interested in joining our community of website creators.
 </code></pre><h2 id="membership-benefits">Membership Benefits</h2>
@@ -125,52 +159,226 @@ document.addEventListener('DOMContentLoaded', function() {
 - [x] A personal website that you&#39;ve created and maintain
 - [x] Willingness to participate in the community
 - [x] Agreement to follow our community guidelines
-</code></pre><h2 id="-registration-form-">/* REGISTRATION FORM */</h2>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<h2 id="after-you-join">After You Join</h2>
-<p>Once your application is approved:</p>
-<ol>
-<li>You&rsquo;ll receive a welcome email with your unique guild member code</li>
-<li>Your website will be added to our member directory</li>
-<li>You&rsquo;ll be able to add the WebmastersGuild badge to your site</li>
-<li>You&rsquo;ll start as an Apprentice and can begin earning achievements</li>
-</ol>
-<h2 id="community-guidelines">Community Guidelines</h2>
-<p>The WebmastersGuild is committed to maintaining a positive, supportive community. We ask all members to:</p>
-<ul>
-<li>Be respectful and constructive in all interactions</li>
-<li>Support fellow guild members in their web development journey</li>
-<li>Avoid spam, excessive self-promotion, or disruptive behavior</li>
-<li>Create websites that don&rsquo;t contain harmful, illegal, or offensive content</li>
-</ul>
-<p>We look forward to welcoming you to the guild!</p>
-
-    
-    
-    
-    
-    
-    
+</code></pre>
+        
+        <div class="join-form-container">
+            <h2 class="section-title">// REGISTRATION FORM</h2>
+            
+            <form id="join-form" name="guild-join" method="POST" data-netlify="true" class="guild-form">
+                <input type="hidden" name="form-name" value="guild-join">
+                
+                <div class="form-group">
+                    <label for="name">Name or Handle:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website-url">Your Website URL:</label>
+                    <input type="url" id="website-url" name="website-url" placeholder="https://yourdomain.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website-description">Brief Website Description:</label>
+                    <textarea id="website-description" name="website-description" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website-tags">Tags (comma separated):</label>
+                    <input type="text" id="website-tags" name="website-tags" placeholder="blog, photography, technology">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Choose a Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <small>Minimum 8 characters, must include one letter and one number</small>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="agreement" name="agreement" required>
+                    <label for="agreement">I agree to the WebmastersGuild community guidelines and understand my website will be listed in the public directory.</label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="button">Submit Application</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="join-after-section">
+            <h2 class="section-title">// AFTER YOU JOIN</h2>
+            
+            <ol>
+                <li>You'll receive a welcome email with your unique guild member code</li>
+                <li>Your website will be added to our member directory</li>
+                <li>You'll be able to add the WebmastersGuild badge to your site</li>
+                <li>You'll start as an Apprentice and can begin earning achievements</li>
+            </ol>
+            
+            <h2 class="section-title">// COMMUNITY GUIDELINES</h2>
+            
+            <p>The WebmastersGuild is committed to maintaining a positive, supportive community. We ask all members to:</p>
+            
+            <ul>
+                <li>Be respectful and constructive in all interactions</li>
+                <li>Support fellow guild members in their web development journey</li>
+                <li>Avoid spam, excessive self-promotion, or disruptive behavior</li>
+                <li>Create websites that don't contain harmful, illegal, or offensive content</li>
+            </ul>
+            
+            <p>We look forward to welcoming you to the guild!</p>
+        </div>
+    </div>
 </article>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    if (window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
+        
+        window.location.href = '/dashboard/';
+    }
+    
+    
+    const joinForm = document.getElementById('join-form');
+    if (joinForm) {
+        joinForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const website = document.getElementById('website-url').value;
+            const description = document.getElementById('website-description').value;
+            const tags = document.getElementById('website-tags').value;
+            
+            
+            console.log("Form submission attempt:", { name, email, website, description, tags });
+            
+            
+            
+            try {
+                
+                const userData = {
+                    name: name,
+                    email: email,
+                    website: website,
+                    description: description,
+                    tags: tags.split(',').map(tag => tag.trim()),
+                    rank: 'apprentice',
+                    joinDate: new Date().toISOString().split('T')[0],
+                    id: Date.now().toString()  
+                };
+                
+                
+                localStorage.setItem('webmastersGuildUser', JSON.stringify(userData));
+                
+                
+                alert('Registration successful! Redirecting to dashboard...');
+                
+                
+                window.location.href = '/dashboard/';
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed: ' + error.message);
+            }
+    }
+});
+</script>
+
 <style>
-.ascii-art {
-    font-family: var(--font-mono);
-    color: var(--color-accent);
-    white-space: pre;
-    line-height: 1.2;
+.join-page-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.join-form-container {
+    margin: var(--space-xl) 0;
+}
+
+.guild-form {
     margin: var(--space-lg) 0;
-    text-align: left;
+    border: 1px solid var(--color-border);
+    padding: var(--space-lg);
+}
+
+.guild-form:before, .guild-form:after {
+    content: "+--------------+";
+    display: block;
+    color: var(--color-accent);
+    margin-bottom: var(--space-md);
+}
+
+.guild-form:after {
+    margin-top: var(--space-md);
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="url"],
+.form-group input[type="password"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: var(--space-sm);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-top: 0.3rem;
+    margin-right: var(--space-sm);
+}
+
+.checkbox-group label {
+    font-weight: 400;
+    flex: 1;
+}
+
+.form-actions {
+    margin-top: var(--space-lg);
+}
+
+small {
+    display: block;
+    margin-top: var(--space-xs);
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.join-after-section {
+    margin-top: var(--space-xxl);
 }
 </style>
 

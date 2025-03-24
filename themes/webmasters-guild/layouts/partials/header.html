@@ -20,7 +20,7 @@
                 </li>
                 {{ end }}
                 <li class="nav-item">
-                    <a href="#" class="nav-link login-button" data-netlify-identity-button>Login</a>
+                    <a href="#" class="nav-link login-button" id="auth-button">Login</a>
                 </li>
             </ul>
         </nav>
@@ -35,6 +35,102 @@ document.addEventListener('DOMContentLoaded', function() {
     if (menuToggle && navList) {
         menuToggle.addEventListener('click', function() {
             navList.classList.toggle('hidden');
+        });
+    }
+    
+    // Handle login/logout button with Netlify Identity
+    const authButton = document.getElementById('auth-button');
+    if (authButton && window.netlifyIdentity) {
+        // Check if user is logged in with Netlify Identity
+        const user = window.netlifyIdentity.currentUser();
+        
+        if (user) {
+            // User is logged in
+            authButton.textContent = 'Dashboard';
+            authButton.setAttribute('href', '/dashboard/');
+            
+            // Add a separate logout button
+            const navList = document.querySelector('.nav-list');
+            if (navList) {
+                const logoutItem = document.createElement('li');
+                logoutItem.className = 'nav-item';
+                
+                const logoutLink = document.createElement('a');
+                logoutLink.href = '#';
+                logoutLink.className = 'nav-link logout-button';
+                logoutLink.textContent = 'Logout';
+                
+                logoutItem.appendChild(logoutLink);
+                navList.appendChild(logoutItem);
+                
+                // Add logout functionality
+                logoutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to log out?')) {
+                        // Log out from Netlify Identity
+                        window.netlifyIdentity.logout();
+                        
+                        // Redirect to home page
+                        window.location.href = '/';
+                    }
+                });
+            }
+        } else {
+            // User is not logged in
+            authButton.textContent = 'Login';
+            
+            // Add login functionality using Netlify Identity
+            authButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Open Netlify Identity modal
+                window.netlifyIdentity.open('login');
+            });
+            
+            // Handle successful login
+            window.netlifyIdentity.on('login', user => {
+                // Redirect to dashboard
+                window.location.href = '/dashboard/';
+            });
+            
+            // Create a Join button if user is not logged in
+            const navList = document.querySelector('.nav-list');
+            if (navList) {
+                const joinItem = document.createElement('li');
+                joinItem.className = 'nav-item';
+                
+                const joinLink = document.createElement('a');
+                joinLink.href = '/join/';
+                joinLink.className = 'nav-link join';
+                joinLink.textContent = 'Join the Guild';
+                
+                joinItem.appendChild(joinLink);
+                navList.appendChild(joinItem);
+            }
+        }
+    } else if (authButton) {
+        // Fallback for when Netlify Identity isn't available
+        authButton.textContent = 'Join';
+        authButton.setAttribute('href', '/join/');
+    }
+    
+    // Handle Netlify Identity events
+    if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', user => {
+            if (user) {
+                // User is logged in after init
+                console.log('User is authenticated after init');
+            }
+        });
+        
+        window.netlifyIdentity.on('logout', () => {
+            console.log('User logged out');
+            window.location.href = '/';
+        });
+        
+        window.netlifyIdentity.on('error', err => {
+            console.error('Netlify Identity error:', err);
+            alert('Authentication error: ' + err.message);
         });
     }
 });

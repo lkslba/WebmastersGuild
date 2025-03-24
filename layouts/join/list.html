@@ -1,0 +1,291 @@
+{{ define "main" }}
+<article class="page-content">
+    <pre class="ascii-art">
+// {{ .Title }}
++---------------------------------+
+|                                 |
++---------------------------------+</pre>
+    
+    <div class="join-page-content">
+        {{ .Content }}
+        
+        <div class="join-form-container">
+            <h2 class="section-title">// REGISTRATION FORM</h2>
+            
+            <form id="join-form" name="guild-join" method="POST" data-netlify="true" class="guild-form">
+                <input type="hidden" name="form-name" value="guild-join">
+                
+                <div class="form-group">
+                    <label for="name">Name or Handle:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website-url">Your Website URL:</label>
+                    <input type="url" id="website-url" name="website-url" placeholder="https://yourdomain.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website-description">Brief Website Description:</label>
+                    <textarea id="website-description" name="website-description" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website-tags">Tags (comma separated):</label>
+                    <input type="text" id="website-tags" name="website-tags" placeholder="blog, photography, technology">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Choose a Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <small>Minimum 8 characters, must include one letter and one number</small>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="agreement" name="agreement" required>
+                    <label for="agreement">I agree to the WebmastersGuild community guidelines and understand my website will be listed in the public directory.</label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="button">Submit Application</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="join-after-section">
+            <h2 class="section-title">// AFTER YOU JOIN</h2>
+            
+            <ol>
+                <li>You'll receive a welcome email with your unique guild member code</li>
+                <li>Your website will be added to our member directory</li>
+                <li>You'll be able to add the WebmastersGuild badge to your site</li>
+                <li>You'll start as an Apprentice and can begin earning achievements</li>
+            </ol>
+            
+            <h2 class="section-title">// COMMUNITY GUIDELINES</h2>
+            
+            <p>The WebmastersGuild is committed to maintaining a positive, supportive community. We ask all members to:</p>
+            
+            <ul>
+                <li>Be respectful and constructive in all interactions</li>
+                <li>Support fellow guild members in their web development journey</li>
+                <li>Avoid spam, excessive self-promotion, or disruptive behavior</li>
+                <li>Create websites that don't contain harmful, illegal, or offensive content</li>
+            </ul>
+            
+            <p>We look forward to welcoming you to the guild!</p>
+        </div>
+    </div>
+</article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is already logged in
+    if (window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
+        // If already logged in, redirect to dashboard
+        window.location.href = '/dashboard/';
+    }
+    
+    // Handle form submission for registration
+    const joinForm = document.getElementById('join-form');
+    if (joinForm) {
+        joinForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.textContent = 'Processing...';
+            submitButton.disabled = true;
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const website = document.getElementById('website-url').value;
+            const description = document.getElementById('website-description').value;
+            const tags = document.getElementById('website-tags').value;
+            
+            // Create registration payload
+            const registrationData = {
+                name,
+                email,
+                password,
+                website,
+                description,
+                tags
+            };
+            
+            // Call our registration function
+            fetch('/.netlify/functions/register-member', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(registrationData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error || 'Registration failed');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Registration succeeded, now log in with Netlify Identity
+                    if (window.netlifyIdentity) {
+                        // Setup event listener for redirection after login
+                        const loginHandler = user => {
+                            // Show success message
+                            alert('Registration successful! Welcome to the WebmastersGuild.');
+                            
+                            // Redirect to dashboard
+                            window.location.href = '/dashboard/';
+                            
+                            // Cleanup event listener
+                            window.netlifyIdentity.off('login', loginHandler);
+                        };
+                        
+                        // Add the login handler
+                        window.netlifyIdentity.on('login', loginHandler);
+                        
+                        // Attempt login with provided credentials
+                        try {
+                            // Open the login modal with prefilled email
+                            window.netlifyIdentity.open('login');
+                            
+                            // Add a small timeout to allow the modal to open before filling email
+                            setTimeout(() => {
+                                // Try to find the email input and fill it
+                                const emailInput = document.querySelector('.netlify-identity-widget input[type="email"]');
+                                if (emailInput) {
+                                    emailInput.value = email;
+                                }
+                            }, 300);
+                        } catch (error) {
+                            console.error('Error opening login modal:', error);
+                            alert('Registration successful! Please log in with your email and password.');
+                            window.location.href = '/';
+                        }
+                    } else {
+                        // No Identity widget available
+                        alert('Registration successful! Please log in to access your account.');
+                        window.location.href = '/';
+                    }
+                } else {
+                    // Registration succeeded but response indicates an issue
+                    submitButton.textContent = originalButtonText;
+                    submitButton.disabled = false;
+                    
+                    // Show error message
+                    alert('Registration issue: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
+                alert('Registration failed. Please try again later.');
+            });
+    }
+});
+</script>
+
+<style>
+.join-page-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.join-form-container {
+    margin: var(--space-xl) 0;
+}
+
+.guild-form {
+    margin: var(--space-lg) 0;
+    border: 1px solid var(--color-border);
+    padding: var(--space-lg);
+}
+
+.guild-form:before, .guild-form:after {
+    content: "+--------------+";
+    display: block;
+    color: var(--color-accent);
+    margin-bottom: var(--space-md);
+}
+
+.guild-form:after {
+    margin-top: var(--space-md);
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="url"],
+.form-group input[type="password"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: var(--space-sm);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-top: 0.3rem;
+    margin-right: var(--space-sm);
+}
+
+.checkbox-group label {
+    font-weight: 400;
+    flex: 1;
+}
+
+.form-actions {
+    margin-top: var(--space-lg);
+}
+
+small {
+    display: block;
+    margin-top: var(--space-xs);
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.join-after-section {
+    margin-top: var(--space-xxl);
+}
+</style>
+{{ end }}

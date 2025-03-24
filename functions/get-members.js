@@ -43,12 +43,29 @@ exports.handler = async function(event, context) {
   // Filter members based on query parameters
   let filteredMembers = [...mockMembers];
   
+  // Only return members that have opted to be in the directory
+  filteredMembers = filteredMembers.filter(member => 
+    member.listInDirectory !== false // If not specified, default to showing
+  );
+  
+  // Hide private information from returned members
+  filteredMembers = filteredMembers.map(member => {
+    const publicMember = { ...member };
+    delete publicMember.email;
+    delete publicMember.userId;
+    return publicMember;
+  });
+  
   if (rank) {
     filteredMembers = filteredMembers.filter(member => member.rank === rank);
   }
   
   if (tag) {
-    filteredMembers = filteredMembers.filter(member => member.tags.includes(tag));
+    filteredMembers = filteredMembers.filter(member => 
+      Array.isArray(member.tags) && member.tags.some(t => 
+        t.toLowerCase() === tag.toLowerCase()
+      )
+    );
   }
   
   if (search) {
@@ -56,7 +73,9 @@ exports.handler = async function(event, context) {
     filteredMembers = filteredMembers.filter(member => 
       member.name.toLowerCase().includes(searchLower) || 
       member.description.toLowerCase().includes(searchLower) ||
-      member.tags.some(tag => tag.toLowerCase().includes(searchLower))
+      (Array.isArray(member.tags) && member.tags.some(tag => 
+        tag.toLowerCase().includes(searchLower)
+      ))
     );
   }
   
