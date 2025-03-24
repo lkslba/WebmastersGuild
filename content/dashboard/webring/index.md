@@ -105,163 +105,200 @@ draft: false
 <script>
 // Check for authentication and load member data
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if user is authenticated with Netlify Identity
-    if (!window.netlifyIdentity || !window.netlifyIdentity.currentUser()) {
+    // Add required auth protection
+    if (!window.auth || !window.auth.isAuthenticated()) {
         window.location.href = '/';
         alert('Please log in to access WebRing management');
         return;
     }
     
-    // Get current user and token
-    const currentUser = window.netlifyIdentity.currentUser();
-    const authToken = currentUser.token.access_token;
-    
-    // Fetch member data from API
-    fetch('/.netlify/functions/get-member', {
-        headers: {
-            'Authorization': `Bearer ${authToken}`
+    // Load member data when auth is ready
+    window.addEventListener('auth:authenticated', async function(event) {
+        if (!event.detail.isAuthenticated) {
+            window.location.href = '/';
+            return;
         }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to load member data');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success && data.member) {
-            const member = data.member;
+        
+        try {
+            // Get access token
+            const token = await window.auth.getAccessToken();
             
-            // Set the website URL field
-            const websiteUrlField = document.getElementById('website-url');
-            if (websiteUrlField && member.website) {
-                websiteUrlField.value = member.website;
+            if (!token) {
+                throw new Error('Authentication token not available');
             }
             
-            // Check if already in WebRing
-            if (member.webring) {
-                document.getElementById('webring-code-section').classList.remove('hidden');
-                document.querySelector('.webring-join').classList.add('hidden');
+            // Fetch member data from API
+            const response = await fetch('/.netlify/functions/get-member', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                // If 404, the user needs to complete registration
+                if (response.status === 404) {
+                    window.location.href = '/join/?complete=true';
+                    return;
+                }
+                throw new Error('Failed to load member data: ' + response.statusText);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success && data.member) {
+                const member = data.member;
                 
-                // Update site ID in the code examples
-                const codeBlocks = document.querySelectorAll('code');
-                codeBlocks.forEach(block => {
-                    block.innerHTML = block.innerHTML.replace(/YOUR_SITE_ID/g, member.id);
-                });
-            }
-            
-            // Handle webring form submission
-            const webringForm = document.getElementById('webring-form');
-            if (webringForm) {
-                webringForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
+                // Set the website URL field
+                const websiteUrlField = document.getElementById('website-url');
+                if (websiteUrlField && member.website) {
+                    websiteUrlField.value = member.website;
+                }
+                
+                // Check if already in WebRing
+                if (member.webring) {
+                    document.getElementById('webring-code-section').classList.remove('hidden');
+                    document.querySelector('.webring-join').classList.add('hidden');
                     
-                    // Show loading state
-                    const submitButton = this.querySelector('button[type="submit"]');
-                    const originalButtonText = submitButton.textContent;
-                    submitButton.textContent = 'Processing...';
-                    submitButton.disabled = true;
-                    
-                    // Prepare update data - just setting webring to true
-                    const updateData = {
-                        webring: true,
-                        webringLocation: document.getElementById('preferred-location').value
-                    };
-                    
-                    // Call update API
-                    fetch('/.netlify/functions/update-member', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authToken}`
-                        },
-                        body: JSON.stringify(updateData)
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to update WebRing status');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            // Show the code section
-                            document.getElementById('webring-code-section').classList.remove('hidden');
-                            webringForm.parentElement.classList.add('hidden');
-                            
-                            // Update site ID in the code examples
-                            const codeBlocks = document.querySelectorAll('code');
-                            codeBlocks.forEach(block => {
-                                block.innerHTML = block.innerHTML.replace(/YOUR_SITE_ID/g, member.id);
-                            });
-                        } else {
-                            throw new Error(data.error || 'Failed to join WebRing');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error joining WebRing:', error);
-                        alert('Error joining WebRing: ' + error.message);
-                        submitButton.textContent = originalButtonText;
-                        submitButton.disabled = false;
+                    // Update site ID in the code examples
+                    const codeBlocks = document.querySelectorAll('code');
+                    codeBlocks.forEach(block => {
+                        block.innerHTML = block.innerHTML.replace(/YOUR_SITE_ID/g, member.id);
                     });
-                });
-            }
-            
-            // Verification button
-            const verifyButton = document.getElementById('verify-webring');
-            if (verifyButton) {
-                verifyButton.addEventListener('click', function() {
-                    const result = document.getElementById('verification-result');
-                    result.innerHTML = '<p class="verification-pending">Checking your site... This may take a moment...</p>';
-                    
-                    // Prepare update data - add badge
-                    const updateData = {
-                        badges: member.badges || []
-                    };
-                    
-                    // Add the ring-bearer badge if not present
-                    if (!updateData.badges.includes('ring-bearer')) {
-                        updateData.badges.push('ring-bearer');
-                    }
-                    
-                    // Call update API
-                    setTimeout(() => {
-                        fetch('/.netlify/functions/update-member', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${authToken}`
-                            },
-                            body: JSON.stringify(updateData)
-                        })
-                        .then(response => {
+                }
+                
+                // Handle webring form submission
+                const webringForm = document.getElementById('webring-form');
+                if (webringForm) {
+                    webringForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        
+                        // Show loading state
+                        const submitButton = this.querySelector('button[type="submit"]');
+                        const originalButtonText = submitButton.textContent;
+                        submitButton.textContent = 'Processing...';
+                        submitButton.disabled = true;
+                        
+                        try {
+                            // Get fresh token
+                            const token = await window.auth.getAccessToken();
+                            
+                            if (!token) {
+                                throw new Error('Authentication token not available');
+                            }
+                            
+                            // Prepare update data - just setting webring to true
+                            const updateData = {
+                                webring: true,
+                                webringLocation: document.getElementById('preferred-location').value
+                            };
+                            
+                            // Call update API
+                            const response = await fetch('/.netlify/functions/update-member', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify(updateData)
+                            });
+                            
                             if (!response.ok) {
-                                throw new Error('Failed to verify WebRing');
+                                const errorData = await response.json();
+                                throw new Error(errorData.error || 'Failed to join WebRing');
                             }
-                            return response.json();
-                        })
-                        .then(data => {
+                            
+                            const data = await response.json();
+                            
                             if (data.success) {
-                                result.innerHTML = '<p class="verification-success">WebRing implementation verified! Your site is now part of the WebmastersGuild WebRing. You\'ve earned the "Ring Bearer" achievement!</p>';
+                                // Show the code section
+                                document.getElementById('webring-code-section').classList.remove('hidden');
+                                webringForm.parentElement.classList.add('hidden');
+                                
+                                // Update site ID in the code examples
+                                const codeBlocks = document.querySelectorAll('code');
+                                codeBlocks.forEach(block => {
+                                    block.innerHTML = block.innerHTML.replace(/YOUR_SITE_ID/g, member.id);
+                                });
                             } else {
-                                throw new Error(data.error || 'Failed to verify WebRing');
+                                throw new Error(data.error || 'Failed to join WebRing');
                             }
-                        })
-                        .catch(error => {
-                            console.error('Error verifying WebRing:', error);
-                            result.innerHTML = '<p class="verification-error">Error verifying WebRing: ' + error.message + '</p>';
-                        });
-                    }, 2000); // Simulate a delay for verification process
-                });
+                        } catch (error) {
+                            console.error('Error joining WebRing:', error);
+                            alert('Error joining WebRing: ' + error.message);
+                            submitButton.textContent = originalButtonText;
+                            submitButton.disabled = false;
+                        }
+                    });
+                }
+                
+                // Verification button
+                const verifyButton = document.getElementById('verify-webring');
+                if (verifyButton) {
+                    verifyButton.addEventListener('click', async function() {
+                        const result = document.getElementById('verification-result');
+                        result.innerHTML = '<p class="verification-pending">Checking your site... This may take a moment...</p>';
+                        
+                        try {
+                            // Get fresh token
+                            const token = await window.auth.getAccessToken();
+                            
+                            if (!token) {
+                                throw new Error('Authentication token not available');
+                            }
+                            
+                            // Prepare update data - add badge
+                            const updateData = {
+                                badges: member.badges || []
+                            };
+                            
+                            // Add the ring-bearer badge if not present
+                            if (!updateData.badges.includes('ring-bearer')) {
+                                updateData.badges.push('ring-bearer');
+                            }
+                            
+                            // Call update API after a simulated delay
+                            setTimeout(async () => {
+                                try {
+                                    const response = await fetch('/.netlify/functions/update-member', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Authorization': `Bearer ${token}`
+                                        },
+                                        body: JSON.stringify(updateData)
+                                    });
+                                    
+                                    if (!response.ok) {
+                                        const errorData = await response.json();
+                                        throw new Error(errorData.error || 'Failed to verify WebRing');
+                                    }
+                                    
+                                    const data = await response.json();
+                                    
+                                    if (data.success) {
+                                        result.innerHTML = '<p class="verification-success">WebRing implementation verified! Your site is now part of the WebmastersGuild WebRing. You\'ve earned the "Ring Bearer" achievement!</p>';
+                                    } else {
+                                        throw new Error(data.error || 'Failed to verify WebRing');
+                                    }
+                                } catch (error) {
+                                    console.error('Error verifying WebRing:', error);
+                                    result.innerHTML = '<p class="verification-error">Error verifying WebRing: ' + error.message + '</p>';
+                                }
+                            }, 2000); // Simulate a delay for verification process
+                        } catch (error) {
+                            console.error('Error preparing verification:', error);
+                            result.innerHTML = '<p class="verification-error">Error preparing verification: ' + error.message + '</p>';
+                        }
+                    });
+                }
+            } else {
+                console.error('Invalid member data returned from API');
+                alert('Failed to load your profile data');
             }
-        } else {
-            console.error('Invalid member data returned from API');
-            alert('Failed to load your profile data');
+        } catch (error) {
+            console.error('Error fetching member data:', error);
+            alert('Failed to load your profile data. Please try again later.');
         }
-    })
-    .catch(error => {
-        console.error('Error fetching member data:', error);
-        alert('Failed to load your profile data. Please try again later.');
     });
 });
 </script>

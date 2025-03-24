@@ -24,10 +24,8 @@
     <meta property="og:url" content="{{ .Permalink }}">
     <meta property="og:type" content="website">
     
-    <!-- Netlify Identity Widget -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    
-    {{ if .IsHome }}
+    <!-- Auth0 SDK -->
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+    <script defer src="{{ "js/auth.js" | relURL }}"></script>
     <script defer src="{{ "js/main.js" | relURL }}"></script>
-    {{ end }}
 </head>

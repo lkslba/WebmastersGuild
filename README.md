@@ -57,7 +57,22 @@ The WebmastersGuild uses Netlify Functions to provide dynamic functionality in a
 - **update-member.js** - Updates member profiles and settings
 - **webring.js** - Manages WebRing navigation between member sites
 
-The serverless functions integrate with Netlify Identity for authentication and store member data in a JSON file.
+The serverless functions integrate with Auth0 for authentication and store member data in a JSON file.
+
+### Auth0 Integration
+
+The site uses Auth0 for authentication. To set up Auth0:
+
+1. Create an Auth0 account and set up a new application
+2. Configure the following environment variables in your Netlify dashboard:
+   - `AUTH0_DOMAIN` - Your Auth0 domain (e.g., your-tenant.auth0.com)
+   - `AUTH0_CLIENT_ID` - Your Auth0 application client ID
+   - `AUTH0_API_AUDIENCE` - The API audience for your Auth0 API (e.g., https://api.webmastersguild.org)
+
+3. Configure Auth0 CORS and callback URLs in your Auth0 dashboard:
+   - Allowed Callback URLs: `https://yourdomain.com/callback`
+   - Allowed Web Origins: `https://yourdomain.com`
+   - Allowed Logout URLs: `https://yourdomain.com`
 
 ## Contributing
 
@@ -79,7 +94,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - UI design influenced by [Advent of Code](https://adventofcode.com/)
 - Built with [Hugo](https://gohugo.io/)
 - Deployed on [Netlify](https://www.netlify.com/)
-- Authentication through [Netlify Identity](https://docs.netlify.com/visitor-access/identity/)
+- Authentication through [Auth0](https://auth0.com/)
 
 ## Features
 

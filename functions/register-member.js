@@ -4,14 +4,36 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const GoTrue = require('gotrue-js').default;
+const jwt = require('jsonwebtoken');
 
-// Initialize GoTrue client for Netlify Identity
-const auth = new GoTrue({
-  APIUrl: process.env.NETLIFY_IDENTITY_URL || '/.netlify/identity',
-  audience: '',
-  setCookie: false,
-});
+// Auth0 token verification function
+const verifyAuth0Token = (token) => {
+  try {
+    // In production, we would properly verify the JWT signature
+    // using the Auth0 public key and the jsonwebtoken library
+    // For this implementation, we'll decode and do basic checks
+    
+    const decoded = jwt.decode(token);
+    
+    // Basic validation
+    if (!decoded || !decoded.sub || !decoded.exp) {
+      console.error('Invalid token format');
+      return null;
+    }
+    
+    // Check if token is expired
+    const now = Math.floor(Date.now() / 1000);
+    if (decoded.exp < now) {
+      console.error('Token expired');
+      return null;
+    }
+    
+    return decoded;
+  } catch (error) {
+    console.error('Error verifying Auth0 token:', error);
+    return null;
+  }
+};
 
 // Load members from data file
 const getMembersData = () => {
@@ -44,6 +66,19 @@ const generateMemberId = (name) => {
 };
 
 exports.handler = async function(event, context) {
+  // Allow OPTIONS for CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+      },
+      body: ''
+    };
+  }
+  
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
@@ -55,44 +90,62 @@ exports.handler = async function(event, context) {
   // Enable CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Content-Type': 'application/json'
   };
 
   try {
+    // Verify Auth0 token from Authorization header
+    const authHeader = event.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        statusCode: 401,
+        headers,
+        body: JSON.stringify({ error: 'Unauthorized - Missing or invalid token' })
+      };
+    }
+    
+    const token = authHeader.substring(7);
+    const decodedToken = verifyAuth0Token(token);
+    
+    if (!decodedToken) {
+      return {
+        statusCode: 401,
+        headers,
+        body: JSON.stringify({ error: 'Unauthorized - Invalid token' })
+      };
+    }
+    
     // Parse request body
     const data = JSON.parse(event.body);
-    const { name, email, password, website, description, tags } = data;
+    const { name, email, website, description, tags, auth0Id } = data;
 
     // Validate required fields
-    if (!name || !email || !password || !website || !description) {
+    if (!name || !email || !website || !description) {
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({ error: 'Missing required fields' })
       };
     }
-
-    // Register user with Netlify Identity
-    let user;
-    try {
-      user = await auth.signup(email, password, {
-        data: {
-          full_name: name,
-          website: website
-        }
-      });
-    } catch (error) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Failed to create user account', details: error.message })
-      };
-    }
+    
+    // Use the Auth0 ID from the token if not provided in the request
+    const userId = auth0Id || decodedToken.sub;
 
     // Get existing members data
     const membersData = getMembersData();
 
+    // Check if Auth0 user already exists in our system
+    const auth0UserExists = membersData.members.some(member => member.auth0Id === userId);
+    
+    if (auth0UserExists) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'User already registered. Please update your profile instead.' })
+      };
+    }
+    
     // Check if email or website already exists
     const emailExists = membersData.members.some(member => member.email === email);
     const websiteExists = membersData.members.some(member => member.website === website);
@@ -128,7 +181,8 @@ exports.handler = async function(event, context) {
       tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
       description: description,
       webring: false,
-      userId: user.id
+      auth0Id: userId, // Store Auth0 user ID instead of Netlify ID
+      listInDirectory: true
     };
 
     // Add to members array

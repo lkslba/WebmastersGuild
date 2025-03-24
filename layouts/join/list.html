@@ -12,49 +12,45 @@
         <div class="join-form-container">
             <h2 class="section-title">// REGISTRATION FORM</h2>
             
-            <form id="join-form" name="guild-join" method="POST" data-netlify="true" class="guild-form">
-                <input type="hidden" name="form-name" value="guild-join">
-                
-                <div class="form-group">
-                    <label for="name">Name or Handle:</label>
-                    <input type="text" id="name" name="name" required>
+            <div class="auth-section" data-auth-anonymous>
+                    <h3>Create Your Account</h3>
+                    <p>First, create your WebmastersGuild account:</p>
+                    <div class="form-actions">
+                        <button type="button" class="button" data-auth-signup>Sign Up with Auth0</button>
+                        <p class="login-option">Already have an account? <a href="#" data-auth-login>Log in</a></p>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="email">Email Address:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="website-url">Your Website URL:</label>
-                    <input type="url" id="website-url" name="website-url" placeholder="https://yourdomain.com" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="website-description">Brief Website Description:</label>
-                    <textarea id="website-description" name="website-description" rows="3" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="website-tags">Tags (comma separated):</label>
-                    <input type="text" id="website-tags" name="website-tags" placeholder="blog, photography, technology">
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Choose a Password:</label>
-                    <input type="password" id="password" name="password" required>
-                    <small>Minimum 8 characters, must include one letter and one number</small>
-                </div>
-                
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="agreement" name="agreement" required>
-                    <label for="agreement">I agree to the WebmastersGuild community guidelines and understand my website will be listed in the public directory.</label>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="button">Submit Application</button>
-                </div>
-            </form>
+                <form id="join-form" name="guild-join" class="guild-form" data-auth-required style="display: none;">
+                    <div class="form-group">
+                        <label for="name">Name or Handle:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="website-url">Your Website URL:</label>
+                        <input type="url" id="website-url" name="website-url" placeholder="https://yourdomain.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="website-description">Brief Website Description:</label>
+                        <textarea id="website-description" name="website-description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="website-tags">Tags (comma separated):</label>
+                        <input type="text" id="website-tags" name="website-tags" placeholder="blog, photography, technology">
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="agreement" name="agreement" required>
+                        <label for="agreement">I agree to the WebmastersGuild community guidelines and understand my website will be listed in the public directory.</label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="button">Complete Registration</button>
+                    </div>
+                </form>
         </div>
         
         <div class="join-after-section">
@@ -85,16 +81,43 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if user is already logged in
-    if (window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
-        // If already logged in, redirect to dashboard
-        window.location.href = '/dashboard/';
-    }
+    // Add event listener for authentication state changes
+    window.addEventListener('auth:authenticated', function(event) {
+        // Check if URL has the complete=true parameter (redirected from callback)
+        const urlParams = new URLSearchParams(window.location.search);
+        const completeRegistration = urlParams.get('complete') === 'true';
+        
+        if (event.detail.isAuthenticated && completeRegistration) {
+            // Show the form to complete registration
+            const form = document.getElementById('join-form');
+            if (form) {
+                form.style.display = 'block';
+                
+                // Pre-fill name from Auth0 profile if available
+                const userProfile = window.auth.getUserProfile();
+                if (userProfile) {
+                    const nameField = document.getElementById('name');
+                    if (nameField && userProfile.name) {
+                        nameField.value = userProfile.name;
+                    }
+                }
+            }
+            
+            // Hide the auth section
+            const authSection = document.querySelector('.auth-section');
+            if (authSection) {
+                authSection.style.display = 'none';
+            }
+        } else if (event.detail.isAuthenticated) {
+            // User is already registered, redirect to dashboard
+            window.location.href = '/dashboard/';
+        }
+    });
     
     // Handle form submission for registration
     const joinForm = document.getElementById('join-form');
     if (joinForm) {
-        joinForm.addEventListener('submit', function(e) {
+        joinForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Show loading state
@@ -103,96 +126,66 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.textContent = 'Processing...';
             submitButton.disabled = true;
             
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const website = document.getElementById('website-url').value;
-            const description = document.getElementById('website-description').value;
-            const tags = document.getElementById('website-tags').value;
-            
-            // Create registration payload
-            const registrationData = {
-                name,
-                email,
-                password,
-                website,
-                description,
-                tags
-            };
-            
-            // Call our registration function
-            fetch('/.netlify/functions/register-member', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(registrationData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.error || 'Registration failed');
-                    });
+            try {
+                // Get access token for API call
+                const token = await window.auth.getAccessToken();
+                
+                if (!token) {
+                    throw new Error('Not authenticated. Please log in again.');
                 }
-                return response.json();
-            })
-            .then(data => {
+                
+                const name = document.getElementById('name').value;
+                const website = document.getElementById('website-url').value;
+                const description = document.getElementById('website-description').value;
+                const tags = document.getElementById('website-tags').value;
+                
+                // Get user profile from Auth0
+                const userProfile = window.auth.getUserProfile();
+                
+                // Create registration payload
+                const registrationData = {
+                    name,
+                    email: userProfile.email,
+                    website,
+                    description,
+                    tags,
+                    auth0Id: userProfile.sub // Auth0 user ID
+                };
+                
+                // Call our registration function
+                const response = await fetch('/.netlify/functions/register-member', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(registrationData)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Registration failed');
+                }
+                
+                const data = await response.json();
+                
                 if (data.success) {
-                    // Registration succeeded, now log in with Netlify Identity
-                    if (window.netlifyIdentity) {
-                        // Setup event listener for redirection after login
-                        const loginHandler = user => {
-                            // Show success message
-                            alert('Registration successful! Welcome to the WebmastersGuild.');
-                            
-                            // Redirect to dashboard
-                            window.location.href = '/dashboard/';
-                            
-                            // Cleanup event listener
-                            window.netlifyIdentity.off('login', loginHandler);
-                        };
-                        
-                        // Add the login handler
-                        window.netlifyIdentity.on('login', loginHandler);
-                        
-                        // Attempt login with provided credentials
-                        try {
-                            // Open the login modal with prefilled email
-                            window.netlifyIdentity.open('login');
-                            
-                            // Add a small timeout to allow the modal to open before filling email
-                            setTimeout(() => {
-                                // Try to find the email input and fill it
-                                const emailInput = document.querySelector('.netlify-identity-widget input[type="email"]');
-                                if (emailInput) {
-                                    emailInput.value = email;
-                                }
-                            }, 300);
-                        } catch (error) {
-                            console.error('Error opening login modal:', error);
-                            alert('Registration successful! Please log in with your email and password.');
-                            window.location.href = '/';
-                        }
-                    } else {
-                        // No Identity widget available
-                        alert('Registration successful! Please log in to access your account.');
-                        window.location.href = '/';
-                    }
+                    // Show success message
+                    alert('Registration successful! Welcome to the WebmastersGuild.');
+                    
+                    // Redirect to dashboard
+                    window.location.href = '/dashboard/';
                 } else {
                     // Registration succeeded but response indicates an issue
-                    submitButton.textContent = originalButtonText;
-                    submitButton.disabled = false;
-                    
-                    // Show error message
-                    alert('Registration issue: ' + (data.message || 'Unknown error'));
+                    throw new Error(data.message || 'Unknown error during registration');
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Registration error:', error);
                 submitButton.textContent = originalButtonText;
                 submitButton.disabled = false;
-                alert('Registration failed. Please try again later.');
-            });
+                alert('Registration failed: ' + error.message);
+            }
+        });
     }
 });
 </script>

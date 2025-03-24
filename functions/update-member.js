@@ -106,8 +106,8 @@ exports.handler = async function(event, context) {
     // Get members data
     const membersData = getMembersData();
     
-    // Find the member index with the given userId
-    const memberIndex = membersData.members.findIndex(m => m.userId === userId);
+    // Find the member index with the given Auth0 ID
+    const memberIndex = membersData.members.findIndex(m => m.auth0Id === userId);
     
     if (memberIndex === -1) {
       return {
@@ -189,7 +189,7 @@ exports.handler = async function(event, context) {
     
     // Return updated member data (excluding sensitive fields)
     const publicMember = { ...currentMember };
-    delete publicMember.userId;
+    delete publicMember.auth0Id;
     
     return {
       statusCode: 200,

@@ -25,8 +25,7 @@ const getUserIdFromToken = (authHeader) => {
   const token = authHeader.substring(7);
   
   try {
-    // In production, we would verify this token with the Netlify JWT secret
-    // This would use jwt.verify(token, process.env.NETLIFY_JWT_SECRET)
+    // In production, we would verify this token with Auth0's public key
     // For this implementation, we'll decode and do basic checks
     const decoded = jwt.decode(token);
     
@@ -43,7 +42,7 @@ const getUserIdFromToken = (authHeader) => {
       return null;
     }
     
-    return decoded.sub; // subject claim contains the user ID
+    return decoded.sub; // subject claim contains the Auth0 user ID
   } catch (error) {
     console.error('Error decoding token:', error);
     return null;
@@ -90,8 +89,8 @@ exports.handler = async function(event, context) {
     // Get members data
     const membersData = getMembersData();
     
-    // Find the member with the given userId
-    const member = membersData.members.find(m => m.userId === userId);
+    // Find the member with the given Auth0 ID
+    const member = membersData.members.find(m => m.auth0Id === userId);
     
     if (!member) {
       return {
@@ -103,7 +102,7 @@ exports.handler = async function(event, context) {
     
     // Create a copy with sensitive fields removed for security
     const publicMember = { ...member };
-    delete publicMember.userId;
+    delete publicMember.auth0Id;
     // We keep email because this is an authenticated endpoint
     
     return {
