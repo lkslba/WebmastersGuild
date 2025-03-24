@@ -1,0 +1,41 @@
+<header class="site-header">
+    <div class="container header-container">
+        <div class="site-title">
+            <a href="{{ .Site.BaseURL }}">/* {{ .Site.Title }} */</a>
+        </div>
+        
+        <div class="ascii-divider">+--------------------------------------------------------------+</div>
+        
+        <nav class="site-nav">
+            <button class="menu-toggle" aria-label="Toggle menu">
+                &gt;_
+            </button>
+            <ul class="nav-list">
+                {{ $currentPage := . }}
+                {{ range .Site.Menus.main }}
+                <li class="nav-item">
+                    <a class="nav-link{{ if eq .Identifier "join" }} join{{ end }}{{ if $currentPage.IsMenuCurrent "main" . }} active{{ end }}" href="{{ .URL }}">
+                        {{ .Name }}
+                    </a>
+                </li>
+                {{ end }}
+                <li class="nav-item">
+                    <a href="#" class="nav-link login-button" data-netlify-identity-button>Login</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navList = document.querySelector('.nav-list');
+    
+    if (menuToggle && navList) {
+        menuToggle.addEventListener('click', function() {
+            navList.classList.toggle('hidden');
+        });
+    }
+});
+</script>

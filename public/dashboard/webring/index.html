@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage WebRing | WebmastersGuild</title>
+    <meta name="description" content="Join the WebmastersGuild WebRing and get your navigation code">
+    
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/main.css">
+    
+    
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    
+    
+    <meta property="og:site_name" content="WebmastersGuild">
+    <meta property="og:title" content="Manage WebRing | WebmastersGuild">
+    <meta property="og:description" content="Join the WebmastersGuild WebRing and get your navigation code">
+    <meta property="og:url" content="https://webmastersguild.org/dashboard/webring/">
+    <meta property="og:type" content="website">
+    
+    
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    
+</head><body><header class="site-header">
+    <div class="container header-container">
+        <div class="site-title">
+            <a href="https://webmastersguild.org/">/* WebmastersGuild */</a>
+        </div>
+        
+        <div class="ascii-divider">+--------------------------------------------------------------+</div>
+        
+        <nav class="site-nav">
+            <button class="menu-toggle" aria-label="Toggle menu">
+                &gt;_
+            </button>
+            <ul class="nav-list">
+                
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        Guild Hall
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/members/">
+                        Member Directory
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/challenges/">
+                        Challenges
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/resources/">
+                        Resources
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/about/">
+                        About
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link join" href="/join/">
+                        Join the Guild
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link login-button" data-netlify-identity-button>Login</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navList = document.querySelector('.nav-list');
+    
+    if (menuToggle && navList) {
+        menuToggle.addEventListener('click', function() {
+            navList.classList.toggle('hidden');
+        });
+    }
+});
+</script><main class="main-content">
+            <div class="container">
+<article class="page-content">
+    <header class="page-header">
+        <pre class="ascii-art">
+// Manage WebRing
++-------------------------------------------------------------+</pre>
+    </header>
+    
+    <div class="page-body">
+        <h1 id="webring-management">WebRing Management</h1>
+<pre tabindex="0"><code>// This page requires authentication
+// Manage your WebRing participation
+</code></pre><!-- raw HTML omitted -->
+<pre><code>    &lt;pre class=&quot;ascii-art&quot;&gt;
+</code></pre>
+<p>[Previous Site] &ndash; [WebmastersGuild] &ndash; [Next Site]
+[Random Site]
+<!-- raw HTML omitted --></p>
+<pre><code>    &lt;p&gt;By joining the WebRing, you'll add a navigation snippet to your website that allows visitors to travel through the ring, discovering other members' sites.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;webring-join&quot;&gt;
+    &lt;h2 class=&quot;section-title&quot;&gt;// JOIN THE WEBRING&lt;/h2&gt;
+    &lt;form id=&quot;webring-form&quot; name=&quot;webring-join&quot; method=&quot;POST&quot; data-netlify=&quot;true&quot; class=&quot;guild-form&quot;&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;form-name&quot; value=&quot;webring-join&quot;&gt;
+        &lt;input type=&quot;hidden&quot; id=&quot;user-id&quot; name=&quot;user-id&quot;&gt;
+        
+        &lt;div class=&quot;form-group&quot;&gt;
+            &lt;label for=&quot;website-url&quot;&gt;Your Website URL:&lt;/label&gt;
+            &lt;input type=&quot;url&quot; id=&quot;website-url&quot; name=&quot;website-url&quot; placeholder=&quot;https://yourdomain.com&quot; required&gt;
+            &lt;small&gt;This must be the same URL you provided in your profile&lt;/small&gt;
+        &lt;/div&gt;
+        
+        &lt;div class=&quot;form-group&quot;&gt;
+            &lt;label for=&quot;preferred-location&quot;&gt;Preferred Location for WebRing Navigation:&lt;/label&gt;
+            &lt;select id=&quot;preferred-location&quot; name=&quot;preferred-location&quot; required&gt;
+                &lt;option value=&quot;&quot;&gt;Select a location...&lt;/option&gt;
+                &lt;option value=&quot;footer&quot;&gt;Footer&lt;/option&gt;
+                &lt;option value=&quot;sidebar&quot;&gt;Sidebar&lt;/option&gt;
+                &lt;option value=&quot;header&quot;&gt;Header&lt;/option&gt;
+                &lt;option value=&quot;custom&quot;&gt;Custom Location&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/div&gt;
+        
+        &lt;div class=&quot;form-group checkbox-group&quot;&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;webring-agreement&quot; name=&quot;webring-agreement&quot; required&gt;
+            &lt;label for=&quot;webring-agreement&quot;&gt;I agree to add the WebRing navigation code to my website and maintain it while I am a member of the WebRing.&lt;/label&gt;
+        &lt;/div&gt;
+        
+        &lt;div class=&quot;form-actions&quot;&gt;
+            &lt;button type=&quot;submit&quot; class=&quot;button&quot;&gt;Join WebRing&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;webring-code hidden&quot; id=&quot;webring-code-section&quot;&gt;
+    &lt;h2 class=&quot;section-title&quot;&gt;// YOUR WEBRING CODE&lt;/h2&gt;
+    &lt;p&gt;Add the following HTML code to your website to join the WebRing:&lt;/p&gt;
+    
+    &lt;pre class=&quot;code-block&quot;&gt;&lt;code&gt;&amp;lt;div class=&quot;webmasters-guild-webring&quot;&amp;gt;
+</code></pre>
+<p>&lt;div class=&ldquo;webring-links&rdquo;&gt;
+&lt;a href=&ldquo;<a href="https://webmastersguild.org/webring/prev/?from=YOUR_SITE_ID%22">https://webmastersguild.org/webring/prev/?from=YOUR_SITE_ID&quot;</a> class=&ldquo;webring-prev&rdquo;&gt;[Previous]&lt;/a&gt;
+&lt;a href=&ldquo;<a href="https://webmastersguild.org/webring/%22">https://webmastersguild.org/webring/&quot;</a> class=&ldquo;webring-home&rdquo;&gt;[WebmastersGuild]&lt;/a&gt;
+&lt;a href=&ldquo;<a href="https://webmastersguild.org/webring/next/?from=YOUR_SITE_ID%22">https://webmastersguild.org/webring/next/?from=YOUR_SITE_ID&quot;</a> class=&ldquo;webring-next&rdquo;&gt;[Next]&lt;/a&gt;
+&lt;a href=&ldquo;<a href="https://webmastersguild.org/webring/random/%22">https://webmastersguild.org/webring/random/&quot;</a> class=&ldquo;webring-random&rdquo;&gt;[Random]&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<pre><code>    &lt;p&gt;You can style the WebRing navigation to match your site's design. Here's some optional CSS:&lt;/p&gt;
+    
+    &lt;pre class=&quot;code-block&quot;&gt;&lt;code&gt;.webmasters-guild-webring {
+</code></pre>
+<p>font-family: monospace;
+padding: 1rem;
+margin: 1rem 0;
+text-align: center;
+}</p>
+<p>.webring-links a {
+margin: 0 0.5rem;
+text-decoration: none;
+}</p>
+<p>.webring-links a:hover {
+text-decoration: underline;
+}<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<pre><code>    &lt;div class=&quot;webring-verification&quot;&gt;
+        &lt;h3&gt;Verification Status&lt;/h3&gt;
+        &lt;p&gt;After adding the code to your site, click the button below to verify your WebRing implementation:&lt;/p&gt;
+        &lt;button type=&quot;button&quot; class=&quot;button&quot; id=&quot;verify-webring&quot;&gt;Verify Implementation&lt;/button&gt;
+        &lt;div id=&quot;verification-result&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class=&quot;form-actions&quot;&gt;
+        &lt;a href=&quot;/dashboard/&quot; class=&quot;button button-secondary&quot;&gt;Back to Dashboard&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+    </div>
+</article>
+
+<style>
+.ascii-art {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    white-space: pre;
+    line-height: 1.2;
+    margin-bottom: var(--space-lg);
+    text-align: left;
+}
+</style>
+
+            </div>
+        </main><footer class="site-footer">
+    <div class="ascii-divider">+--------------------------------------------------------------+</div>
+    <div class="container footer-container">
+        <div class="footer-column">
+            <h3 class="footer-heading">// ABOUT</h3>
+            <p>A community celebrating personal website creation and ownership. Join us in fostering a supportive environment for webmasters.</p>
+        </div>
+        
+        <div class="footer-column">
+            <h3 class="footer-heading">// NAVIGATION</h3>
+            <ul class="footer-nav-list">
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/">[Guild Hall]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/members/">[Member Directory]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/challenges/">[Challenges]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/resources/">[Resources]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/about/">[About]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/join/">[Join the Guild]</a>
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="footer-column">
+            <h3 class="footer-heading">// RESOURCES</h3>
+            <ul class="footer-nav-list">
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/resources/">[Guild Resources]</a>
+                </li>
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/challenges/">[Monthly Challenges]</a>
+                </li>
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/webring/">[WebRing]</a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="footer-copyright">
+            <p>© 2025 WebmastersGuild // <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> // Terminal Aesthetic</p>
+        </div>
+    </div>
+</footer></body>
+</html>

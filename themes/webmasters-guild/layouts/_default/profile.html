@@ -1,0 +1,212 @@
+{{ define "main" }}
+<article class="profile-page">
+    <header class="profile-header">
+        <pre class="ascii-art">
+// MEMBER PROFILE
++-------------------------------------------------------------+</pre>
+        
+        <h1 class="profile-name">{{ .Params.profileData.name }}</h1>
+        
+        <div class="profile-rank rank-{{ .Params.profileData.rank }}">
+            {{ if eq .Params.profileData.rank "apprentice" }}
+                <span class="rank-title">Apprentice</span>
+            {{ else if eq .Params.profileData.rank "journeyman" }}
+                <span class="rank-title">Journeyman</span>
+            {{ else if eq .Params.profileData.rank "master" }}
+                <span class="rank-title">Master</span>
+            {{ else if eq .Params.profileData.rank "grandmaster" }}
+                <span class="rank-title">Grandmaster</span>
+            {{ end }}
+        </div>
+        
+        <div class="profile-meta">
+            <div class="profile-join-date">Guild member since {{ .Params.profileData.joinDate }}</div>
+            {{ if .Params.profileData.webring }}
+            <div class="profile-webring">WebRing Member</div>
+            {{ end }}
+        </div>
+    </header>
+    
+    <div class="profile-content">
+        <div class="profile-main">
+            <section class="profile-section website-section">
+                <h2 class="section-title">// WEBSITE</h2>
+                <div class="website-info">
+                    <div class="website-link">
+                        <a href="{{ .Params.profileData.website }}" target="_blank" rel="noopener">{{ .Params.profileData.website }}</a>
+                    </div>
+                    <div class="website-description">
+                        {{ .Params.profileData.description }}
+                    </div>
+                    <div class="website-tags">
+                        {{ range .Params.profileData.tags }}
+                        <span class="tag">{{ . }}</span>
+                        {{ end }}
+                    </div>
+                </div>
+            </section>
+            
+            {{ if .Content }}
+            <section class="profile-section bio-section">
+                <h2 class="section-title">// ABOUT</h2>
+                <div class="bio-content">
+                    {{ .Content }}
+                </div>
+            </section>
+            {{ end }}
+        </div>
+        
+        <aside class="profile-sidebar">
+            <section class="profile-section achievements-section">
+                <h2 class="section-title">// ACHIEVEMENTS</h2>
+                <div class="achievements-list">
+                    {{ if in .Params.profileData.badges "guild-initiate" }}
+                    <div class="achievement">
+                        <div class="achievement-icon">🏆</div>
+                        <div class="achievement-details">
+                            <div class="achievement-name">Guild Initiate</div>
+                        </div>
+                    </div>
+                    {{ end }}
+                    
+                    {{ if in .Params.profileData.badges "ring-bearer" }}
+                    <div class="achievement">
+                        <div class="achievement-icon">💍</div>
+                        <div class="achievement-details">
+                            <div class="achievement-name">Ring Bearer</div>
+                        </div>
+                    </div>
+                    {{ end }}
+                    
+                    {{ if in .Params.profileData.badges "challenger" }}
+                    <div class="achievement">
+                        <div class="achievement-icon">🏅</div>
+                        <div class="achievement-details">
+                            <div class="achievement-name">Challenger</div>
+                        </div>
+                    </div>
+                    {{ end }}
+                </div>
+            </section>
+        </aside>
+    </div>
+</article>
+
+<style>
+.profile-page {
+    margin-bottom: var(--space-xxl);
+}
+
+.profile-name {
+    font-size: 1.75rem;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+}
+
+.profile-rank {
+    display: inline-block;
+    margin-bottom: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--color-border);
+}
+
+.rank-title {
+    font-family: var(--font-mono);
+}
+
+.rank-apprentice .rank-title {
+    color: #aaaaaa;
+}
+
+.rank-journeyman .rank-title {
+    color: #66cc66;
+}
+
+.rank-master .rank-title {
+    color: #b3b300;
+}
+
+.rank-grandmaster .rank-title {
+    color: #ff9900;
+}
+
+.profile-meta {
+    font-size: 0.9rem;
+    margin-bottom: var(--space-lg);
+    color: var(--color-text);
+    opacity: 0.8;
+}
+
+.profile-webring {
+    margin-top: var(--space-xs);
+    color: var(--color-accent);
+}
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+}
+
+.profile-section {
+    border: 1px solid var(--color-border);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.website-link a {
+    font-family: var(--font-mono);
+    word-break: break-all;
+}
+
+.website-description {
+    margin: var(--space-md) 0;
+}
+
+.website-tags {
+    margin-top: var(--space-md);
+}
+
+.tag {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    margin-right: var(--space-xs);
+    margin-bottom: var(--space-xs);
+    border: 1px solid var(--color-border);
+    font-size: 0.9rem;
+}
+
+.achievements-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+.achievement {
+    display: flex;
+    align-items: center;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+}
+
+.achievement-icon {
+    font-size: 1.5rem;
+    margin-right: var(--space-md);
+}
+
+.achievement-name {
+    font-weight: bold;
+    color: var(--color-accent);
+}
+
+@media (min-width: 768px) {
+    .profile-content {
+        grid-template-columns: 2fr 1fr;
+    }
+    
+    .achievements-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{{ end }}

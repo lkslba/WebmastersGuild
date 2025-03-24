@@ -1,0 +1,18 @@
+{
+  "name": "webmasters-guild",
+  "version": "1.0.0",
+  "description": "A community platform celebrating personal website creation and ownership",
+  "main": "index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "hugo",
+    "start": "netlify dev"
+  },
+  "keywords": [
+    "hugo",
+    "netlify",
+    "webring"
+  ],
+  "author": "WebmastersGuild",
+  "license": "MIT"
+}

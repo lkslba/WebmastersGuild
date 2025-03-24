@@ -1,0 +1,77 @@
+{{ define "main" }}
+<article class="page-content">
+    <pre class="ascii-art">
+// {{ .Title }}
++---------------------------------+
+|                                 |
++---------------------------------+</pre>
+    
+    {{ .Content }}
+    
+    {{ if eq .Section "members" }}
+    <div class="directory-tools">
+        <div class="directory-search">
+            <input type="text" id="member-search" placeholder="grep members..." disabled>
+            <button class="button button-secondary" disabled>search</button>
+        </div>
+        <div class="directory-filters">
+            <select id="rank-filter" disabled>
+                <option value="">filter by rank</option>
+                <option value="apprentice">apprentice</option>
+                <option value="journeyman">journeyman</option>
+                <option value="master">master</option>
+                <option value="grandmaster">grandmaster</option>
+            </select>
+            <select id="category-filter" disabled>
+                <option value="">filter by category</option>
+                <option value="blog">blog</option>
+                <option value="portfolio">portfolio</option>
+                <option value="technology">technology</option>
+                <option value="art">art & design</option>
+                <option value="other">other</option>
+            </select>
+        </div>
+        <div class="directory-actions">
+            <button id="random-member-btn" class="button">Visit Random Site</button>
+        </div>
+    </div>
+    
+    <script src="{{ "js/directory.js" | relURL }}"></script>
+    {{ end }}
+    
+    {{ if eq .Section "challenges" }}
+    <div class="challenge-archive">
+        <pre class="ascii-art">
++---------- CHALLENGES ----------+
+|                                |
+|      Awaiting initialization   |
+|                                |
++--------------------------------+</pre>
+        <!-- Challenge listing will be implemented once we have actual challenges -->
+    </div>
+    {{ end }}
+    
+    {{ if eq .Section "resources" }}
+    <div class="resource-categories">
+        <pre class="ascii-art">
++---------- RESOURCES ----------+
+|                               |
+|      Loading resources...     |
+|                               |
++-------------------------------+</pre>
+        <!-- Resource categorization will be implemented as content grows -->
+    </div>
+    {{ end }}
+</article>
+
+<style>
+.ascii-art {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    white-space: pre;
+    line-height: 1.2;
+    margin: var(--space-lg) 0;
+    text-align: left;
+}
+</style>
+{{ end }}

@@ -1,0 +1,36 @@
+[build]
+  publish = "public"
+  command = "hugo"
+  functions = "functions"
+
+[build.environment]
+  HUGO_VERSION = "0.111.3"
+  HUGO_ENV = "production"
+  HUGO_ENABLEGITINFO = "true"
+
+[context.deploy-preview]
+  command = "hugo -b $DEPLOY_PRIME_URL"
+
+[context.branch-deploy]
+  command = "hugo -b $DEPLOY_PRIME_URL"
+
+[dev]
+  framework = "hugo"
+  port = 8888
+  targetPort = 1313
+  command = "hugo server -D"
+  autoLaunch = true
+  
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline' identity.netlify.com; connect-src 'self' identity.netlify.com"

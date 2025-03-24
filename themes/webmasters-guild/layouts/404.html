@@ -1,0 +1,60 @@
+{{ define "main" }}
+<div class="error-page">
+    <pre class="ascii-art">
+ _______  _______  _______  _______  ______   
+|       ||       ||       ||       ||    _ |  
+|    ___||   _   ||   _   ||    ___||   | ||  
+|   |___ |  | |  ||  | |  ||   |___ |   |_||_ 
+|    ___||  |_|  ||  |_|  ||    ___||    __  |
+|   |    |       ||       ||   |___ |   |  | |
+|___|    |_______||_______||_______||___|  |_|
+    </pre>
+    
+    <h1>404 - PAGE NOT FOUND</h1>
+    <p>The path you seek does not exist in the guild archives.</p>
+    <p>Perhaps it was never crafted, or has been lost in the depths of cyberspace.</p>
+    
+    <div class="ascii-divider">+--------------------------------------------------------------+</div>
+    
+    <div class="error-navigation">
+        <a href="/" class="button">Return to Guild Hall</a>
+        <a href="/members/" class="button button-secondary">Visit Member Directory</a>
+    </div>
+</div>
+
+<style>
+.error-page {
+    padding: var(--space-xxl) 0;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-page h1 {
+    color: var(--color-accent);
+}
+
+.error-navigation {
+    margin-top: var(--space-xl);
+    display: flex;
+    gap: var(--space-md);
+}
+
+.ascii-art {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    white-space: pre;
+    line-height: 1.2;
+    margin: var(--space-lg) 0;
+}
+
+@media (max-width: 768px) {
+    .error-navigation {
+        flex-direction: column;
+    }
+    
+    .ascii-art {
+        font-size: 0.6rem;
+    }
+}
+</style>
+{{ end }}

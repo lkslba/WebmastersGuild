@@ -1,0 +1,50 @@
+baseURL = "https://webmastersguild.org/"
+languageCode = "en-us"
+title = "WebmastersGuild"
+theme = "webmasters-guild"
+
+# Enable taxonomies
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  rank = "ranks"
+
+# Site Parameters
+[params]
+  description = "A community platform celebrating personal website creation and ownership"
+  author = "WebmastersGuild"
+  # Social media and contact
+  github = "WebmastersGuild"
+  
+# Main menu
+[menu]
+  [[menu.main]]
+    identifier = "home"
+    name = "Guild Hall"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    identifier = "directory"
+    name = "Member Directory"
+    url = "/members/"
+    weight = 2
+  [[menu.main]]
+    identifier = "challenges"
+    name = "Challenges"
+    url = "/challenges/"
+    weight = 3
+  [[menu.main]]
+    identifier = "resources"
+    name = "Resources"
+    url = "/resources/"
+    weight = 4
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 5
+  [[menu.main]]
+    identifier = "join"
+    name = "Join the Guild"
+    url = "/join/"
+    weight = 6

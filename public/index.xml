@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>WebmastersGuild</title>
+    <link>https://webmastersguild.org/</link>
+    <description>Recent content on WebmastersGuild</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://webmastersguild.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Code Artisan</title>
+      <link>https://webmastersguild.org/members/code-artisan/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/members/code-artisan/</guid>
+      <description>This is a dynamic profile page that fetches content from the member database.</description>
+    </item>
+    
+    <item>
+      <title>Edit Profile</title>
+      <link>https://webmastersguild.org/dashboard/edit-profile/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/dashboard/edit-profile/</guid>
+      <description>Edit Profile // This page requires authentication // Edit your profile information below </description>
+    </item>
+    
+    <item>
+      <title>Manage WebRing</title>
+      <link>https://webmastersguild.org/dashboard/webring/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/dashboard/webring/</guid>
+      <description>WebRing Management // This page requires authentication // Manage your WebRing participation &amp;lt;pre class=&amp;quot;ascii-art&amp;quot;&amp;gt; [Previous Site] &amp;ndash; [WebmastersGuild] &amp;ndash; [Next Site] [Random Site] &amp;lt;p&amp;gt;By joining the WebRing, you&#39;ll add a navigation snippet to your website that allows visitors to travel through the ring, discovering other members&#39; sites.&amp;lt;/p&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;webring-join&amp;quot;&amp;gt; &amp;lt;h2 class=&amp;quot;section-title&amp;quot;&amp;gt;// JOIN THE WEBRING&amp;lt;/h2&amp;gt; &amp;lt;form id=&amp;quot;webring-form&amp;quot; name=&amp;quot;webring-join&amp;quot; method=&amp;quot;POST&amp;quot; data-netlify=&amp;quot;true&amp;quot; class=&amp;quot;guild-form&amp;quot;&amp;gt; &amp;lt;input type=&amp;quot;hidden&amp;quot; name=&amp;quot;form-name&amp;quot; value=&amp;quot;webring-join&amp;quot;&amp;gt; &amp;lt;input type=&amp;quot;hidden&amp;quot; id=&amp;quot;user-id&amp;quot; name=&amp;quot;user-id&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;form-group&amp;quot;&amp;gt; &amp;lt;label for=&amp;quot;website-url&amp;quot;&amp;gt;Your Website URL:&amp;lt;/label&amp;gt; &amp;lt;input type=&amp;quot;url&amp;quot; id=&amp;quot;website-url&amp;quot; name=&amp;quot;website-url&amp;quot; placeholder=&amp;quot;https://yourdomain.</description>
+    </item>
+    
+    <item>
+      <title>Pixel Pioneer</title>
+      <link>https://webmastersguild.org/members/pixel-pioneer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/members/pixel-pioneer/</guid>
+      <description>This is a dynamic profile page that fetches content from the member database.</description>
+    </item>
+    
+    <item>
+      <title>Sample Member</title>
+      <link>https://webmastersguild.org/members/sample/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/members/sample/</guid>
+      <description>I&amp;rsquo;ve been creating websites since the early 2000s and have a passion for clean, minimal designs with a focus on content. My current site features tutorials on terminal applications, custom CSS experiments, and the occasional tech opinion piece.
+I believe in the importance of personal websites as a way to share knowledge and express creativity outside the walled gardens of social media. The WebmastersGuild community has been a great source of inspiration and feedback.</description>
+    </item>
+    
+    <item>
+      <title>Terminal Wizard</title>
+      <link>https://webmastersguild.org/members/terminal-wizard/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/members/terminal-wizard/</guid>
+      <description>This is a dynamic profile page that fetches content from the member database.</description>
+    </item>
+    
+  </channel>
+</rss>

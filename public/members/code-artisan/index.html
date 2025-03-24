@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Code Artisan | WebmastersGuild</title>
+    <meta name="description" content="Code Artisan&#39;s profile">
+    
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/main.css">
+    
+    
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    
+    
+    <meta property="og:site_name" content="WebmastersGuild">
+    <meta property="og:title" content="Code Artisan | WebmastersGuild">
+    <meta property="og:description" content="Code Artisan&#39;s profile">
+    <meta property="og:url" content="https://webmastersguild.org/members/code-artisan/">
+    <meta property="og:type" content="website">
+    
+    
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    
+</head><body><header class="site-header">
+    <div class="container header-container">
+        <div class="site-title">
+            <a href="https://webmastersguild.org/">/* WebmastersGuild */</a>
+        </div>
+        
+        <div class="ascii-divider">+--------------------------------------------------------------+</div>
+        
+        <nav class="site-nav">
+            <button class="menu-toggle" aria-label="Toggle menu">
+                &gt;_
+            </button>
+            <ul class="nav-list">
+                
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        Guild Hall
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/members/">
+                        Member Directory
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/challenges/">
+                        Challenges
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/resources/">
+                        Resources
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/about/">
+                        About
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link join" href="/join/">
+                        Join the Guild
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link login-button" data-netlify-identity-button>Login</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navList = document.querySelector('.nav-list');
+    
+    if (menuToggle && navList) {
+        menuToggle.addEventListener('click', function() {
+            navList.classList.toggle('hidden');
+        });
+    }
+});
+</script><main class="main-content">
+            <div class="container">
+<article class="profile-page">
+    <div id="profile-content">
+        <div class="loading">Loading member profile...</div>
+    </div>
+</article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const memberID = window.location.pathname.split('/').pop();
+    
+    
+    fetch('/.netlify/functions/get-members')
+        .then(response => response.json())
+        .then(data => {
+            const member = data.members.find(m => m.id === memberID);
+            
+            if (member) {
+                renderProfile(member);
+            } else {
+                document.getElementById('profile-content').innerHTML = `
+                    <div class="error-message">
+                        <h1>Member Not Found</h1>
+                        <p>Sorry, the member profile you're looking for doesn't exist.</p>
+                        <a href="/members/" class="button">Back to Directory</a>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching member profile:', error);
+            document.getElementById('profile-content').innerHTML = `
+                <div class="error-message">
+                    <h1>Error Loading Profile</h1>
+                    <p>There was an error loading this member profile. Please try again later.</p>
+                    <a href="/members/" class="button">Back to Directory</a>
+                </div>
+            `;
+        });
+    
+    function renderProfile(member) {
+        const profileContent = document.getElementById('profile-content');
+        
+        profileContent.innerHTML = `
+            <header class="profile-header">
+                <pre class="ascii-art">
+
++-------------------------------------------------------------+</pre>
+                
+                <h1 class="profile-name">${member.name}</h1>
+                
+                <div class="profile-rank rank-${member.rank}">
+                    <span class="rank-title">${capitalizeFirst(member.rank)}</span>
+                </div>
+                
+                <div class="profile-meta">
+                    <div class="profile-join-date">Guild member since ${member.joinDate}</div>
+                    ${member.webring ? '<div class="profile-webring">WebRing Member</div>' : ''}
+                </div>
+            </header>
+            
+            <div class="profile-content">
+                <div class="profile-main">
+                    <section class="profile-section website-section">
+                        <h2 class="section-title">// WEBSITE</h2>
+                        <div class="website-info">
+                            <div class="website-link">
+                                <a href="${member.website}" target="_blank" rel="noopener">${member.website}</a>
+                            </div>
+                            <div class="website-description">
+                                ${member.description}
+                            </div>
+                            <div class="website-tags">
+                                ${member.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </section>
+                    
+                    ${member.bio ? `
+                    <section class="profile-section bio-section">
+                        <h2 class="section-title">// ABOUT</h2>
+                        <div class="bio-content">
+                            <p>${member.bio}</p>
+                        </div>
+                    </section>
+                    ` : ''}
+                </div>
+                
+                <aside class="profile-sidebar">
+                    <section class="profile-section achievements-section">
+                        <h2 class="section-title">// ACHIEVEMENTS</h2>
+                        <div class="achievements-list">
+                            ${renderAchievements(member.badges)}
+                        </div>
+                    </section>
+                </aside>
+            </div>
+        `;
+    }
+    
+    function renderAchievements(badges) {
+        const achievementData = {
+            'guild-initiate': {
+                icon: '🏆',
+                name: 'Guild Initiate',
+                description: 'Completed member profile'
+            },
+            'ring-bearer': {
+                icon: '💍',
+                name: 'Ring Bearer',
+                description: 'Joined the WebRing'
+            },
+            'challenger': {
+                icon: '🏅',
+                name: 'Challenger',
+                description: 'Completed a guild challenge'
+            },
+            'mentor': {
+                icon: '📚',
+                name: 'Guild Mentor',
+                description: 'Helped other members improve their craft'
+            }
+        };
+        
+        if (!badges || badges.length === 0) {
+            return '<p>No achievements earned yet.</p>';
+        }
+        
+        return badges.map(badge => {
+            const achievement = achievementData[badge] || {
+                icon: '🔍',
+                name: capitalizeFirst(badge.replace(/-/g, ' ')),
+                description: 'Achievement details missing'
+            };
+            
+            return `
+                <div class="achievement">
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-details">
+                        <div class="achievement-name">${achievement.name}</div>
+                        <div class="achievement-desc">${achievement.description}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    function capitalizeFirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+});
+</script>
+
+<style>
+.loading {
+    padding: var(--space-xl);
+    color: var(--color-accent);
+    font-style: italic;
+    text-align: center;
+}
+
+.error-message {
+    padding: var(--space-xl);
+    text-align: center;
+}
+
+.profile-page {
+    margin-bottom: var(--space-xxl);
+}
+
+.profile-name {
+    font-size: 1.75rem;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+}
+
+.profile-rank {
+    display: inline-block;
+    margin-bottom: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--color-border);
+}
+
+.rank-title {
+    font-family: var(--font-mono);
+}
+
+.rank-apprentice .rank-title {
+    color: #aaaaaa;
+}
+
+.rank-journeyman .rank-title {
+    color: #66cc66;
+}
+
+.rank-master .rank-title {
+    color: #b3b300;
+}
+
+.rank-grandmaster .rank-title {
+    color: #ff9900;
+}
+
+.profile-meta {
+    font-size: 0.9rem;
+    margin-bottom: var(--space-lg);
+    color: var(--color-text);
+    opacity: 0.8;
+}
+
+.profile-webring {
+    margin-top: var(--space-xs);
+    color: var(--color-accent);
+}
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+}
+
+.profile-section {
+    border: 1px solid var(--color-border);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.website-link a {
+    font-family: var(--font-mono);
+    word-break: break-all;
+}
+
+.website-description {
+    margin: var(--space-md) 0;
+}
+
+.website-tags {
+    margin-top: var(--space-md);
+}
+
+.tag {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    margin-right: var(--space-xs);
+    margin-bottom: var(--space-xs);
+    border: 1px solid var(--color-border);
+    font-size: 0.9rem;
+}
+
+.achievements-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+.achievement {
+    display: flex;
+    align-items: center;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+}
+
+.achievement-icon {
+    font-size: 1.5rem;
+    margin-right: var(--space-md);
+}
+
+.achievement-name {
+    font-weight: bold;
+    color: var(--color-accent);
+}
+
+.achievement-desc {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+@media (min-width: 768px) {
+    .profile-content {
+        grid-template-columns: 2fr 1fr;
+    }
+    
+    .achievements-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+            </div>
+        </main><footer class="site-footer">
+    <div class="ascii-divider">+--------------------------------------------------------------+</div>
+    <div class="container footer-container">
+        <div class="footer-column">
+            <h3 class="footer-heading">// ABOUT</h3>
+            <p>A community celebrating personal website creation and ownership. Join us in fostering a supportive environment for webmasters.</p>
+        </div>
+        
+        <div class="footer-column">
+            <h3 class="footer-heading">// NAVIGATION</h3>
+            <ul class="footer-nav-list">
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/">[Guild Hall]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/members/">[Member Directory]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/challenges/">[Challenges]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/resources/">[Resources]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/about/">[About]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/join/">[Join the Guild]</a>
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="footer-column">
+            <h3 class="footer-heading">// RESOURCES</h3>
+            <ul class="footer-nav-list">
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/resources/">[Guild Resources]</a>
+                </li>
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/challenges/">[Monthly Challenges]</a>
+                </li>
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/webring/">[WebRing]</a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="footer-copyright">
+            <p>© 2025 WebmastersGuild // <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> // Terminal Aesthetic</p>
+        </div>
+    </div>
+</footer></body>
+</html>

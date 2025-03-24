@@ -1,0 +1,24 @@
+{{ define "main" }}
+<article class="page-content">
+    <header class="page-header">
+        <pre class="ascii-art">
+// {{ .Title }}
++-------------------------------------------------------------+</pre>
+    </header>
+    
+    <div class="page-body">
+        {{ .Content }}
+    </div>
+</article>
+
+<style>
+.ascii-art {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    white-space: pre;
+    line-height: 1.2;
+    margin-bottom: var(--space-lg);
+    text-align: left;
+}
+</style>
+{{ end }}

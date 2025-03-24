@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Member Directory on WebmastersGuild</title>
+    <link>https://webmastersguild.org/members/</link>
+    <description>Recent content in Member Directory on WebmastersGuild</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://webmastersguild.org/members/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Code Artisan</title>
+      <link>https://webmastersguild.org/members/code-artisan/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/members/code-artisan/</guid>
+      <description>This is a dynamic profile page that fetches content from the member database.</description>
+    </item>
+    
+    <item>
+      <title>Pixel Pioneer</title>
+      <link>https://webmastersguild.org/members/pixel-pioneer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/members/pixel-pioneer/</guid>
+      <description>This is a dynamic profile page that fetches content from the member database.</description>
+    </item>
+    
+    <item>
+      <title>Sample Member</title>
+      <link>https://webmastersguild.org/members/sample/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/members/sample/</guid>
+      <description>I&amp;rsquo;ve been creating websites since the early 2000s and have a passion for clean, minimal designs with a focus on content. My current site features tutorials on terminal applications, custom CSS experiments, and the occasional tech opinion piece.
+I believe in the importance of personal websites as a way to share knowledge and express creativity outside the walled gardens of social media. The WebmastersGuild community has been a great source of inspiration and feedback.</description>
+    </item>
+    
+    <item>
+      <title>Terminal Wizard</title>
+      <link>https://webmastersguild.org/members/terminal-wizard/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://webmastersguild.org/members/terminal-wizard/</guid>
+      <description>This is a dynamic profile page that fetches content from the member database.</description>
+    </item>
+    
+  </channel>
+</rss>

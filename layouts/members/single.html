@@ -1,0 +1,289 @@
+{{ define "main" }}
+<article class="profile-page">
+    <div id="profile-content">
+        <div class="loading">Loading member profile...</div>
+    </div>
+</article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the member ID from the URL
+    const memberID = window.location.pathname.split('/').pop();
+    
+    // Fetch the member data
+    fetch('/.netlify/functions/get-members')
+        .then(response => response.json())
+        .then(data => {
+            const member = data.members.find(m => m.id === memberID);
+            
+            if (member) {
+                renderProfile(member);
+            } else {
+                document.getElementById('profile-content').innerHTML = `
+                    <div class="error-message">
+                        <h1>Member Not Found</h1>
+                        <p>Sorry, the member profile you're looking for doesn't exist.</p>
+                        <a href="/members/" class="button">Back to Directory</a>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching member profile:', error);
+            document.getElementById('profile-content').innerHTML = `
+                <div class="error-message">
+                    <h1>Error Loading Profile</h1>
+                    <p>There was an error loading this member profile. Please try again later.</p>
+                    <a href="/members/" class="button">Back to Directory</a>
+                </div>
+            `;
+        });
+    
+    function renderProfile(member) {
+        const profileContent = document.getElementById('profile-content');
+        
+        profileContent.innerHTML = `
+            <header class="profile-header">
+                <pre class="ascii-art">
+// MEMBER PROFILE
++-------------------------------------------------------------+</pre>
+                
+                <h1 class="profile-name">${member.name}</h1>
+                
+                <div class="profile-rank rank-${member.rank}">
+                    <span class="rank-title">${capitalizeFirst(member.rank)}</span>
+                </div>
+                
+                <div class="profile-meta">
+                    <div class="profile-join-date">Guild member since ${member.joinDate}</div>
+                    ${member.webring ? '<div class="profile-webring">WebRing Member</div>' : ''}
+                </div>
+            </header>
+            
+            <div class="profile-content">
+                <div class="profile-main">
+                    <section class="profile-section website-section">
+                        <h2 class="section-title">// WEBSITE</h2>
+                        <div class="website-info">
+                            <div class="website-link">
+                                <a href="${member.website}" target="_blank" rel="noopener">${member.website}</a>
+                            </div>
+                            <div class="website-description">
+                                ${member.description}
+                            </div>
+                            <div class="website-tags">
+                                ${member.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </section>
+                    
+                    ${member.bio ? `
+                    <section class="profile-section bio-section">
+                        <h2 class="section-title">// ABOUT</h2>
+                        <div class="bio-content">
+                            <p>${member.bio}</p>
+                        </div>
+                    </section>
+                    ` : ''}
+                </div>
+                
+                <aside class="profile-sidebar">
+                    <section class="profile-section achievements-section">
+                        <h2 class="section-title">// ACHIEVEMENTS</h2>
+                        <div class="achievements-list">
+                            ${renderAchievements(member.badges)}
+                        </div>
+                    </section>
+                </aside>
+            </div>
+        `;
+    }
+    
+    function renderAchievements(badges) {
+        const achievementData = {
+            'guild-initiate': {
+                icon: '🏆',
+                name: 'Guild Initiate',
+                description: 'Completed member profile'
+            },
+            'ring-bearer': {
+                icon: '💍',
+                name: 'Ring Bearer',
+                description: 'Joined the WebRing'
+            },
+            'challenger': {
+                icon: '🏅',
+                name: 'Challenger',
+                description: 'Completed a guild challenge'
+            },
+            'mentor': {
+                icon: '📚',
+                name: 'Guild Mentor',
+                description: 'Helped other members improve their craft'
+            }
+        };
+        
+        if (!badges || badges.length === 0) {
+            return '<p>No achievements earned yet.</p>';
+        }
+        
+        return badges.map(badge => {
+            const achievement = achievementData[badge] || {
+                icon: '🔍',
+                name: capitalizeFirst(badge.replace(/-/g, ' ')),
+                description: 'Achievement details missing'
+            };
+            
+            return `
+                <div class="achievement">
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-details">
+                        <div class="achievement-name">${achievement.name}</div>
+                        <div class="achievement-desc">${achievement.description}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    function capitalizeFirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+});
+</script>
+
+<style>
+.loading {
+    padding: var(--space-xl);
+    color: var(--color-accent);
+    font-style: italic;
+    text-align: center;
+}
+
+.error-message {
+    padding: var(--space-xl);
+    text-align: center;
+}
+
+.profile-page {
+    margin-bottom: var(--space-xxl);
+}
+
+.profile-name {
+    font-size: 1.75rem;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+}
+
+.profile-rank {
+    display: inline-block;
+    margin-bottom: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--color-border);
+}
+
+.rank-title {
+    font-family: var(--font-mono);
+}
+
+.rank-apprentice .rank-title {
+    color: #aaaaaa;
+}
+
+.rank-journeyman .rank-title {
+    color: #66cc66;
+}
+
+.rank-master .rank-title {
+    color: #b3b300;
+}
+
+.rank-grandmaster .rank-title {
+    color: #ff9900;
+}
+
+.profile-meta {
+    font-size: 0.9rem;
+    margin-bottom: var(--space-lg);
+    color: var(--color-text);
+    opacity: 0.8;
+}
+
+.profile-webring {
+    margin-top: var(--space-xs);
+    color: var(--color-accent);
+}
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+}
+
+.profile-section {
+    border: 1px solid var(--color-border);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.website-link a {
+    font-family: var(--font-mono);
+    word-break: break-all;
+}
+
+.website-description {
+    margin: var(--space-md) 0;
+}
+
+.website-tags {
+    margin-top: var(--space-md);
+}
+
+.tag {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    margin-right: var(--space-xs);
+    margin-bottom: var(--space-xs);
+    border: 1px solid var(--color-border);
+    font-size: 0.9rem;
+}
+
+.achievements-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+.achievement {
+    display: flex;
+    align-items: center;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+}
+
+.achievement-icon {
+    font-size: 1.5rem;
+    margin-right: var(--space-md);
+}
+
+.achievement-name {
+    font-weight: bold;
+    color: var(--color-accent);
+}
+
+.achievement-desc {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+@media (min-width: 768px) {
+    .profile-content {
+        grid-template-columns: 2fr 1fr;
+    }
+    
+    .achievements-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{{ end }}

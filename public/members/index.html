@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Member Directory | WebmastersGuild</title>
+    <meta name="description" content="Browse the websites of WebmastersGuild members.">
+    
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/main.css">
+    
+    
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    
+    
+    <meta property="og:site_name" content="WebmastersGuild">
+    <meta property="og:title" content="Member Directory | WebmastersGuild">
+    <meta property="og:description" content="Browse the websites of WebmastersGuild members.">
+    <meta property="og:url" content="https://webmastersguild.org/members/">
+    <meta property="og:type" content="website">
+    
+    
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    
+</head><body><header class="site-header">
+    <div class="container header-container">
+        <div class="site-title">
+            <a href="https://webmastersguild.org/">/* WebmastersGuild */</a>
+        </div>
+        
+        <div class="ascii-divider">+--------------------------------------------------------------+</div>
+        
+        <nav class="site-nav">
+            <button class="menu-toggle" aria-label="Toggle menu">
+                &gt;_
+            </button>
+            <ul class="nav-list">
+                
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        Guild Hall
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/members/">
+                        Member Directory
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/challenges/">
+                        Challenges
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/resources/">
+                        Resources
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/about/">
+                        About
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link join" href="/join/">
+                        Join the Guild
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link login-button" data-netlify-identity-button>Login</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navList = document.querySelector('.nav-list');
+    
+    if (menuToggle && navList) {
+        menuToggle.addEventListener('click', function() {
+            navList.classList.toggle('hidden');
+        });
+    }
+});
+</script><main class="main-content">
+            <div class="container">
+<article class="page-content">
+    <pre class="ascii-art">
+// Member Directory
++---------------------------------+
+|                                 |
++---------------------------------+</pre>
+    
+    <h1 id="member-directory">Member Directory</h1>
+<pre tabindex="0"><code>// A collection of guild member websites
+// Browse by rank, filter by tags, or search by name
+</code></pre><!-- raw HTML omitted -->
+<h2 id="member-profiles">Member Profiles</h2>
+<!-- raw HTML omitted -->
+<pre><code>&lt;!-- More member cards will be added here as members join --&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+    
+    <div class="directory-tools">
+        <div class="directory-search">
+            <input type="text" id="member-search" placeholder="grep members...">
+            <button class="button button-secondary" id="search-button">search</button>
+        </div>
+        <div class="directory-filters">
+            <select id="rank-filter">
+                <option value="">filter by rank</option>
+                <option value="apprentice">apprentice</option>
+                <option value="journeyman">journeyman</option>
+                <option value="master">master</option>
+                <option value="grandmaster">grandmaster</option>
+            </select>
+            <select id="category-filter">
+                <option value="">filter by category</option>
+                <option value="blog">blog</option>
+                <option value="portfolio">portfolio</option>
+                <option value="technology">technology</option>
+                <option value="art">art & design</option>
+                <option value="other">other</option>
+            </select>
+        </div>
+        <div class="directory-actions">
+            <button id="random-member-btn" class="button">Visit Random Site</button>
+        </div>
+    </div>
+    
+    
+    <div class="member-grid" id="member-grid">
+        
+        <div class="loading">Loading member directory...</div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        fetch('/.netlify/functions/get-members')
+            .then(response => response.json())
+            .then(data => {
+                renderMembers(data.members || []);
+            })
+            .catch(error => {
+                console.error('Error fetching members:', error);
+                document.getElementById('member-grid').innerHTML = 
+                    '<p>Error loading member directory. Please try again later.</p>';
+            });
+        
+        
+        const searchButton = document.getElementById('search-button');
+        const searchInput = document.getElementById('member-search');
+        const rankFilter = document.getElementById('rank-filter');
+        const categoryFilter = document.getElementById('category-filter');
+        
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        rankFilter.addEventListener('change', performSearch);
+        categoryFilter.addEventListener('change', performSearch);
+        
+        function performSearch() {
+            const searchTerm = searchInput.value;
+            const rank = rankFilter.value;
+            const category = categoryFilter.value;
+            
+            let url = '/.netlify/functions/get-members?';
+            
+            if (searchTerm) {
+                url += `search=${encodeURIComponent(searchTerm)}&`;
+            }
+            
+            if (rank) {
+                url += `rank=${encodeURIComponent(rank)}&`;
+            }
+            
+            if (category) {
+                url += `tag=${encodeURIComponent(category)}`;
+            }
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    renderMembers(data.members || []);
+                })
+                .catch(error => {
+                    console.error('Error searching members:', error);
+                });
+        }
+        
+        function renderMembers(members) {
+            const memberGrid = document.getElementById('member-grid');
+            
+            if (members.length === 0) {
+                memberGrid.innerHTML = '<p>No members found matching your criteria.</p>';
+                return;
+            }
+            
+            memberGrid.innerHTML = members.map(member => `
+                <div class="member-card">
+                    <div class="member-info">
+                        <h3 class="member-name">
+                            <a href="/members/${member.id}">${member.name}</a>
+                        </h3>
+                        <div class="member-rank rank-${member.rank}">${capitalizeFirst(member.rank)}</div>
+                        <div class="member-tags">
+                            ${member.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <div class="member-description">
+                            ${member.description}
+                        </div>
+                        <div class="member-link">
+                            <a href="${member.website}" target="_blank" rel="noopener">${member.website}</a>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        <a href="/members/${member.id}" class="button">View Profile</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function capitalizeFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+    });
+    </script>
+    
+    <style>
+    .loading {
+        padding: var(--space-lg);
+        color: var(--color-accent);
+        font-style: italic;
+    }
+    
+    .member-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+        margin: var(--space-xl) 0;
+    }
+    
+    .member-card {
+        border: 1px solid var(--color-border);
+        padding: var(--space-lg);
+    }
+    
+    .member-name {
+        margin-top: 0;
+        margin-bottom: var(--space-xs);
+    }
+    
+    .member-name a {
+        color: var(--color-accent);
+    }
+    
+    .member-rank {
+        display: inline-block;
+        margin-bottom: var(--space-md);
+        font-size: 0.9rem;
+    }
+    
+    .rank-apprentice {
+        color: #aaaaaa;
+    }
+    
+    .rank-journeyman {
+        color: #66cc66;
+    }
+    
+    .rank-master {
+        color: #b3b300;
+    }
+    
+    .rank-grandmaster {
+        color: #ff9900;
+    }
+    
+    .member-tags {
+        margin-bottom: var(--space-md);
+    }
+    
+    .tag {
+        display: inline-block;
+        font-size: 0.9rem;
+        padding: var(--space-xs) var(--space-sm);
+        margin-right: var(--space-xs);
+        margin-bottom: var(--space-xs);
+        border: 1px solid var(--color-border);
+    }
+    
+    .member-description {
+        margin-bottom: var(--space-md);
+    }
+    
+    .member-link {
+        margin-bottom: var(--space-md);
+        word-break: break-all;
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+    }
+    
+    .member-actions {
+        margin-top: var(--space-md);
+    }
+    
+    @media (min-width: 768px) {
+        .member-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .member-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    </style>
+</article>
+
+            </div>
+        </main><footer class="site-footer">
+    <div class="ascii-divider">+--------------------------------------------------------------+</div>
+    <div class="container footer-container">
+        <div class="footer-column">
+            <h3 class="footer-heading">// ABOUT</h3>
+            <p>A community celebrating personal website creation and ownership. Join us in fostering a supportive environment for webmasters.</p>
+        </div>
+        
+        <div class="footer-column">
+            <h3 class="footer-heading">// NAVIGATION</h3>
+            <ul class="footer-nav-list">
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/">[Guild Hall]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/members/">[Member Directory]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/challenges/">[Challenges]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/resources/">[Resources]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/about/">[About]</a>
+                </li>
+                
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/join/">[Join the Guild]</a>
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="footer-column">
+            <h3 class="footer-heading">// RESOURCES</h3>
+            <ul class="footer-nav-list">
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/resources/">[Guild Resources]</a>
+                </li>
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/challenges/">[Monthly Challenges]</a>
+                </li>
+                <li class="footer-nav-item">
+                    <a class="footer-nav-link" href="/webring/">[WebRing]</a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="footer-copyright">
+            <p>© 2025 WebmastersGuild // <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> // Terminal Aesthetic</p>
+        </div>
+    </div>
+</footer></body>
+</html>

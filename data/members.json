@@ -1,0 +1,54 @@
+{
+  "members": [
+    {
+      "id": "terminal-wizard",
+      "name": "Terminal Wizard",
+      "website": "https://example.com",
+      "joinDate": "2023-04-15",
+      "rank": "journeyman",
+      "badges": ["guild-initiate", "ring-bearer", "challenger"],
+      "tags": ["blog", "technology", "coding"],
+      "description": "A personal website focused on programming tutorials, tech experiments, and digital explorations.",
+      "webring": true,
+      "bio": "I've been creating websites since the early 2000s and have a passion for clean, minimal designs with a focus on content."
+    },
+    {
+      "id": "code-artisan",
+      "name": "Code Artisan",
+      "website": "https://example.org",
+      "joinDate": "2023-05-20",
+      "rank": "apprentice",
+      "badges": ["guild-initiate"],
+      "tags": ["portfolio", "design", "art"],
+      "description": "A creative portfolio showcasing digital art and web experiments with a focus on visual storytelling.",
+      "webring": true,
+      "bio": "Digital artist exploring the intersection of code and creativity."
+    },
+    {
+      "id": "pixel-pioneer",
+      "name": "Pixel Pioneer",
+      "website": "https://example.net",
+      "joinDate": "2023-03-10",
+      "rank": "master",
+      "badges": ["guild-initiate", "ring-bearer", "challenger", "mentor"],
+      "tags": ["retro", "games", "graphics"],
+      "description": "A retro-themed website dedicated to pixel art, game development, and the aesthetics of early computing.",
+      "webring": true,
+      "bio": "Nostalgic web developer with a passion for pixels and old-school computing."
+    }
+  ],
+  "webring": [
+    {
+      "id": "terminal-wizard",
+      "url": "https://example.com"
+    },
+    {
+      "id": "code-artisan",
+      "url": "https://example.org"
+    },
+    {
+      "id": "pixel-pioneer",
+      "url": "https://example.net"
+    }
+  ]
+}
